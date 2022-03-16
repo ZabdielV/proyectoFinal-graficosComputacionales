@@ -9,3 +9,10 @@ Posiblemente se usen assets externos.
 - El sistema contará con 5 poweups que le darán al usario poderes especiales.
 - El sistema contará con un contador de puntos del usuario y del rival.
 - El sistema contará con un menú donde se podrá elegir dos opciones: jugar o escoger un nivel.
+
+# Descripción de PoweUps: 
+1. Vida: Te da una vida extra.
+2. Rayo: Le da velocidad a la pelota.
+3. Puntos Dobles: Da puntos dobles en los próximos 10 segundos.
+4. Multi-disparo: Multiplica la pelote en 3.
+5. Sticky-ball: La pelota se queda pegada y puedes accionarla manualmente.
