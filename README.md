@@ -9,6 +9,7 @@ Posiblemente se usen assets externos.
 - El sistema contará con 5 poweups que le darán al usario poderes especiales.
 - El sistema contará con un contador de puntos del usuario y del rival.
 - El sistema contará con un menú donde se podrá elegir dos opciones: jugar o escoger un nivel.
+- El sistema contará con una UI que mostrará elementos en patalla.
 
 # Descripción de PoweUps: 
 1. Vida: Te da una vida extra.
@@ -16,3 +17,31 @@ Posiblemente se usen assets externos.
 3. Puntos Dobles: Da puntos dobles en los próximos 10 segundos.
 4. Multi-disparo: Multiplica la pelote en 3.
 5. Sticky-ball: La pelota se queda pegada y puedes accionarla manualmente.
+
+
+# Plan de trabajo:
+1. El sistema contará con un menú donde se podrá elegir dos opciones: jugar o escoger un nivel:
+   - Tareas:
+     - Desarrollar botones de Jugar y escoger nivel. Encargado: Zabdiel Valentín.
+2. El sistema contará con una UI que mostrará elementos en patalla.
+   - Tareas:
+     - Desarrollar contador de puntos. Encargado:
+     - Desarrollar vidas. Encargado:
+     - Desarrollar diseños de PoweUps. Encargado:
+3. El sistema contará con al menos 3 niveles de dificultad.
+   - Tareas:
+     - Desarrollar inteligencia artificial del rival. Encargado:
+     - Aumentar la velocidad de la pelota por nivel. Encargado:
+4. El sistema contará con 5 poweups que le darán al usario poderes especiales.
+   - Tareas:
+     - Desarrollar poweup de vida. Encargado:
+     - Desarrollar poweup de rayo. Encargado:
+     - Desarrollar poweup de puntos dobles. Encargado:
+     - Desarrollar poweup de Multi-disparo. Encargado:
+     - Desarrollar poweup de Sticky-ball. Encargado:
+5. Escenarios:
+   - Tareas:
+     - Importar Assets y adornar los escenarios de cada nivel. Encargado:
+
+
+
