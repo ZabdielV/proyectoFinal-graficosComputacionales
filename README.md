@@ -43,5 +43,6 @@ Posiblemente se usen assets externos.
    - Tareas:
      - Importar Assets y adornar los escenarios de cada nivel. Encargado: Emiliano Heredia.
 
+# Guía de pantallas
 
-
+[Imágenes dentro de la carpeta de Pages]
