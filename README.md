@@ -34,11 +34,11 @@ Posiblemente se usen assets externos.
      - Aumentar la velocidad de la pelota por nivel. Encargado:
 4. El sistema contará con 5 poweups que le darán al usario poderes especiales.
    - Tareas:
-     - Desarrollar poweup de vida. Encargado:
+     - Desarrollar poweup de vida. Encargado: Zabdiel Valentín.
      - Desarrollar poweup de rayo. Encargado:
-     - Desarrollar poweup de puntos dobles. Encargado:
+     - Desarrollar poweup de puntos dobles. Encargado: Zabdiel Valentín.
      - Desarrollar poweup de Multi-disparo. Encargado:
-     - Desarrollar poweup de Sticky-ball. Encargado:
+     - Desarrollar poweup de Sticky-ball. Encargado: Zabdiel Valentín.
 5. Escenarios:
    - Tareas:
      - Importar Assets y adornar los escenarios de cada nivel. Encargado:
