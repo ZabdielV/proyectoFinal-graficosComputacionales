@@ -25,23 +25,23 @@ Posiblemente se usen assets externos.
      - Desarrollar botones de Jugar y escoger nivel. Encargado: Zabdiel Valentín.
 2. El sistema contará con una UI que mostrará elementos en patalla.
    - Tareas:
-     - Desarrollar contador de puntos. Encargado:
-     - Desarrollar vidas. Encargado:
-     - Desarrollar diseños de PoweUps. Encargado:
+     - Desarrollar contador de puntos. Encargado:Luis Jonathan Rosas
+     - Desarrollar vidas. Encargado:Emiliano Heredia
+     - Desarrollar diseños de PoweUps. Encargado: Luis Jonathan Rosas
 3. El sistema contará con al menos 3 niveles de dificultad.
    - Tareas:
-     - Desarrollar inteligencia artificial del rival. Encargado:
-     - Aumentar la velocidad de la pelota por nivel. Encargado:
+     - Desarrollar inteligencia artificial del rival. Encargado: Luis Jonathan Rosas
+     - Aumentar la velocidad de la pelota por nivel. Encargado: Emiliano Heredia
 4. El sistema contará con 5 poweups que le darán al usario poderes especiales.
    - Tareas:
      - Desarrollar poweup de vida. Encargado: Zabdiel Valentín.
-     - Desarrollar poweup de rayo. Encargado:
+     - Desarrollar poweup de rayo. Encargado: Emiliano Heredia
      - Desarrollar poweup de puntos dobles. Encargado: Zabdiel Valentín.
-     - Desarrollar poweup de Multi-disparo. Encargado:
+     - Desarrollar poweup de Multi-disparo. Encargado: Luis Jonathan Rosas.
      - Desarrollar poweup de Sticky-ball. Encargado: Zabdiel Valentín.
 5. Escenarios:
    - Tareas:
-     - Importar Assets y adornar los escenarios de cada nivel. Encargado:
+     - Importar Assets y adornar los escenarios de cada nivel. Encargado: Emiliano Heredia.
 
 
 
