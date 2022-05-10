@@ -10,7 +10,7 @@ import { OrbitControls } from '../libs/three.js/controls/OrbitControls.js';
 import { OBJLoader } from '../libs/three.js/loaders/OBJLoader.js';
 import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
 
-let renderer = null, scene = null, camera = null, group = null, objectList = [], orbitControls = null;
+let renderer = null, scene = null, camera = null, group = null, orbitControls = null;
 
 let duration = 20000; // ms
 let currentTime = Date.now();
@@ -21,7 +21,15 @@ let mapUrl = "../images/checker_large.gif";
 
 
 
-let objMtlModelUrl = {obj:'../models/obj/Penguin_obj/penguin.obj', mtl:'../models/obj/Penguin_obj/penguin.mtl'};
+
+
+//Mesa de pinguino
+let objMtlMesaUrl={obj:'../models/pingPongMesa/10520_pingpongtable_L2.obj', mtl:'../models/pingPongMesa/10520_pingpongtable_L2.mtl'};
+
+//Raqueta
+let objMtlRaquetaUrl={obj:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3.obj', mtl:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3.mtl'};
+
+let objMtlSonicUrl={obj:'../models/Sonic/son_M.obj', mtl:'../models/Sonic/son_M.mtl'};
 
 
 
@@ -30,8 +38,6 @@ function main()
     const canvas = document.getElementById("webglcanvas");
 
     createScene(canvas);
-    
-
 
     update();
 }
@@ -51,7 +57,7 @@ function onProgress( xhr )
 
 
 
-async function loadObjMtl(objModelUrl, objectList)
+async function loadObjMtlMesa(objModelUrl)
 {
     try
     {
@@ -66,7 +72,8 @@ async function loadObjMtl(objModelUrl, objectList)
         objLoader.setMaterials(materials);
 
         const object = await objLoader.loadAsync(objModelUrl.obj);
-    
+
+
         object.traverse(function (child) {
             if (child.isMesh)
             {
@@ -75,13 +82,14 @@ async function loadObjMtl(objModelUrl, objectList)
             }
         });
         
-        console.log(object);
+        //console.log(object);
 
-        object.position.y += 1;
-        object.scale.set(0.15, 0.15, 0.15);
-
-        objectList.push(object);
+        object.position.y = 0;
+        object.rotation.x = Math.PI*(1.5);
+        object.scale.set(0.1, 0.1, 0.1);
         scene.add(object);
+      
+        
     }
     catch (err)
     {
@@ -89,6 +97,94 @@ async function loadObjMtl(objModelUrl, objectList)
     }
 }
 
+
+async function loadObjMtlRaqueta(objModelUrl)
+{
+    try
+    {
+        const mtlLoader = new MTLLoader();
+
+        const materials = await mtlLoader.loadAsync(objModelUrl.mtl);
+
+        materials.preload();
+        
+        const objLoader = new OBJLoader();
+
+        objLoader.setMaterials(materials);
+
+        const object = await objLoader.loadAsync(objModelUrl.obj);
+
+
+        object.traverse(function (child) {
+            if (child.isMesh)
+            {
+                // child.castShadow = false;
+                // child.receiveShadow = false;
+            }
+        });
+        
+        //console.log(object);
+
+         //object.position.y = 0;
+         object.position.set(0,9,15);
+         object.rotation.x = Math.PI*(1.5);
+         object.scale.set(0.1, 0.1, 0.1);
+        scene.add(object);
+
+        //Copia de raqueta
+        let copia_raqueta=object.clone();
+        object.position.set(0,9,-15);
+       
+        scene.add(copia_raqueta);
+
+      
+        
+    }
+    catch (err)
+    {
+        onError(err);
+    }
+}
+
+async function loadObjMtlSonic(objModelUrl)
+{
+    try
+    {
+        const mtlLoader = new MTLLoader();
+
+        const materials = await mtlLoader.loadAsync(objModelUrl.mtl);
+
+        materials.preload();
+        
+        const objLoader = new OBJLoader();
+
+        objLoader.setMaterials(materials);
+
+        const object = await objLoader.loadAsync(objModelUrl.obj);
+
+
+        object.traverse(function (child) {
+            if (child.isMesh)
+            {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+        
+        //console.log(object);
+
+        object.position.set(20,0,0);
+        object.rotation.y = Math.PI*(1.5);
+        object.scale.set(1, 1, 1);
+        scene.add(object);
+        
+        
+    }
+    catch (err)
+    {
+        onError(err);
+    }
+}
 
 
 function animate() 
@@ -131,37 +227,33 @@ function createScene(canvas)
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height, 1, 4000 );
-    camera.position.set(-2, 6, 12);
+    camera.position.set(-2,20, 25);
 
     orbitControls = new OrbitControls(camera, renderer.domElement);
         
     // Add a directional light to show off the object
-    directionalLight = new THREE.DirectionalLight( 0xaaaaaa, 1);
-
+    directionalLight = new THREE.DirectionalLight( 0xaaaaaa, 1.0);
     // Create and add all the lights
-    directionalLight.position.set(.5, 1, -3);
+    directionalLight.position.set(0, 5, 0);
     directionalLight.target.position.set(0,0,0);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    spotLight = new THREE.SpotLight (0xaaaaaa);
-    spotLight.position.set(2, 8, 15);
-    spotLight.target.position.set(-2, 0, -2);
-    scene.add(spotLight);
-
-    spotLight.castShadow = true;
-
-    spotLight.shadow.camera.near = 1;
-    spotLight.shadow. camera.far = 200;
-    spotLight.shadow.camera.fov = 45;
+    const directionalLight2 = new THREE.DirectionalLight( 0xaaaaaa, 2.0);
+    // Create and add all the lights
+    directionalLight2.position.set(0, 15, 15);
+    directionalLight2.target.position.set(0,15,0);
+    scene.add(directionalLight2);
 
 
-    ambientLight = new THREE.AmbientLight ( 0x444444, 0.8);
+    ambientLight = new THREE.AmbientLight ( 0x444444, 1.2);
     scene.add(ambientLight);
     
     // Create the objects
+    loadObjMtlMesa(objMtlMesaUrl);
+    loadObjMtlRaqueta(objMtlRaquetaUrl);
+    loadObjMtlSonic(objMtlSonicUrl);
 
-    loadObjMtl(objMtlModelUrl, objectList);
 
     // Create a group to hold the objects
     group = new THREE.Object3D;
@@ -177,18 +269,12 @@ function createScene(canvas)
     let mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({map:map, side:THREE.DoubleSide}));
 
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.y = -4.02;
+    mesh.position.y = 0;
     mesh.castShadow = false;
     mesh.receiveShadow = true;
     group.add( mesh );
     
-    // Create the cylinder 
-    geometry = new THREE.CylinderGeometry(1, 2, 2, 50, 10);
-    mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial());
-    mesh.position.y = -3;
-    mesh.castShadow = false;
-    mesh.receiveShadow = true;    
-    group.add( mesh );
+
 }
 
 main();
