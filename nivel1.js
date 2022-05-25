@@ -244,19 +244,13 @@ function animate()
 
     //movimiento pelota
     //sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
-    sphere.position.z +=angle*20*movimientoZ;
-    sphere.position.x += angle*10*movimientoX;
+    sphere.position.z +=angle*60*movimientoZ;
+    sphere.position.x += angle*1*movimientoX;
+    sphere.position.y = -((sphere.position.z - 1) * (sphere.position.z - 1) / 30) + 15;
 
     //se produce colision en juador
     if(sphereCollider.intersectsBox(boxCollider)){
- /*        direccion*=-1;
-        if(result===0){
-            result += (Math.random() * direccion);
-        }else{
-            result *= (Math.random()*(-1));
-        }
-        console.log(result)
-        sphere.position.x += result*15*direccion; */
+
         golpePelotaEnJugador();
         
     }
@@ -371,7 +365,7 @@ function createScene(canvas)
     sphereCollider=new THREE.Sphere(sphere.position,  0.5);
 
     //CREATE BOX player
-    const geometryBox1 = new THREE.BoxGeometry( 15, 10, 1 );
+    const geometryBox1 = new THREE.BoxGeometry( 16, 10, 0.1 );
     const materialBox1 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
     cube1 = new THREE.Mesh( geometryBox1, materialBox1 );
     scene.add( cube1 );
@@ -381,8 +375,8 @@ function createScene(canvas)
     boxCollider = new THREE.Box3().setFromObject(cube1);
 
 
-     //CREATE BOX player
-     const geometryBox2 = new THREE.BoxGeometry( 15, 10, 1 );
+     //CREATE BOX CPU
+     const geometryBox2 = new THREE.BoxGeometry( 16, 10, 0.1 );
      const materialBox2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
      cube2 = new THREE.Mesh( geometryBox2, materialBox2 );
      scene.add( cube2 );
@@ -392,7 +386,7 @@ function createScene(canvas)
      boxCollider2 = new THREE.Box3().setFromObject(cube2);
 
     //Pared derecha
-    const geometryBox3 = new THREE.BoxGeometry( 30, 10, 1 );
+    const geometryBox3 = new THREE.BoxGeometry( 30, 10, 0.1 );
     const materialBox3 = new THREE.MeshBasicMaterial( {color:0xff0000 } );
     meshPared1 = new THREE.Mesh( geometryBox3, materialBox3 );
     scene.add( meshPared1 );
@@ -403,7 +397,7 @@ function createScene(canvas)
     paredCollider1 = new THREE.Box3().setFromObject(meshPared1);
     
      //Pared izquierda
-     const geometryBox4 = new THREE.BoxGeometry( 30, 10, 1 );
+     const geometryBox4 = new THREE.BoxGeometry( 30, 10, 0.1 );
      const materialBox4 = new THREE.MeshBasicMaterial( {color:0xff0000 } );
      meshPared2 = new THREE.Mesh( geometryBox4, materialBox4 );
      scene.add( meshPared2 );
@@ -415,7 +409,7 @@ function createScene(canvas)
 
 
     //Collider que defecta si la pelota se le fua al Jugador
-    const geometryBox5 = new THREE.BoxGeometry( 15, 10, 1 );
+    const geometryBox5 = new THREE.BoxGeometry( 15, 10, 0.1 );
     const materialBox5 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
     meshPared3 = new THREE.Mesh( geometryBox5, materialBox5 );
     scene.add( meshPared3 );
@@ -426,7 +420,7 @@ function createScene(canvas)
 
 
        //Collider que defecta si la pelota se le fua al Jugador
-       const geometryBox6 = new THREE.BoxGeometry( 15, 10, 1 );
+       const geometryBox6 = new THREE.BoxGeometry( 15, 10, 0.1 );
        const materialBox6 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
        meshPared4 = new THREE.Mesh( geometryBox6, materialBox6 );
        scene.add( meshPared4 );
