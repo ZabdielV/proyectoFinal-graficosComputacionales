@@ -12,8 +12,10 @@ import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
 import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
 let renderer = null, scene = null, camera = null, group = null, orbitControls = null,sphere= null,cube1= null,direccion= null;
 let sphereCollider=null,boxCollider=null;
-let cube2=null,boxCollider2=null;
+let cube2=null,boxCollider2=null,paredCollider1=null,paredCollider2=null,paredCollider3=null,paredCollider4=null;
+let meshPared1=null,meshPared2=null,meshPared3=null,meshPared4=null;
 let cheerAnimation=null;
+let movimientoX=1,movimientoZ=1;
 let duration = 20000; // ms
 let currentTime = Date.now();
 
@@ -238,21 +240,62 @@ function animate()
     currentTime = now;
     let fract = deltat / duration;
     let angle = Math.PI * 2 * fract;
+    var result = 0;
 
     //movimiento pelota
-    sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
-    sphere.position.z +=angle*20*direccion;
+    //sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
+    sphere.position.z +=angle*20*movimientoZ;
+    sphere.position.x += angle*10*movimientoX;
 
     //se produce colision en juador
     if(sphereCollider.intersectsBox(boxCollider)){
-    direccion*=-1;
-    }
-    if(sphereCollider.intersectsBox(boxCollider2)){
-        direccion*=-1;
+ /*        direccion*=-1;
+        if(result===0){
+            result += (Math.random() * direccion);
+        }else{
+            result *= (Math.random()*(-1));
         }
+        console.log(result)
+        sphere.position.x += result*15*direccion; */
+        golpePelotaEnJugador();
+        
+    }
+    //se produce colision en CPU
+    if(sphereCollider.intersectsBox(boxCollider2)){
+        golpePelotaEnCPU();
+        }
+        
+    //Si choca con pared derecho
+    if(sphereCollider.intersectsBox(paredCollider1)){
+        movimientoX*=-1;
+     }
+
+    //Si choca con pared izquerda
+    if(sphereCollider.intersectsBox(paredCollider2)){
+        movimientoX*=-1;
+     }
+
 
     //cube1.position.x+=angle*1.5;
     //boxCollider.setFromObject(cube1);
+}
+
+function golpePelotaEnJugador(){
+    console.log("colision");
+    var fuerza=Math.random()*10;
+    var movimiento=Math.random() > 0.5 ? -1 : 1;
+   // movimientoX=(sphere.position.x-cube1.position.x)/5;
+   movimientoX=fuerza*movimiento;
+    movimientoZ*=-1;
+}
+
+function golpePelotaEnCPU(){
+    console.log("colision");
+    var fuerza=Math.random()*10;
+    var movimiento=Math.random() > 0.5 ? -1 : 1;
+   // movimientoX=(sphere.position.x-cube1.position.x)/5;
+   movimientoX=fuerza*movimiento;
+    movimientoZ*=-1;
 }
 
 function update() 
@@ -299,6 +342,8 @@ function createScene(canvas)
     scene.add(directionalLight);
 
     const directionalLight2 = new THREE.DirectionalLight( 0xaaaaaa, 2.0);
+
+
     // Create and add all the lights
     directionalLight2.position.set(0, 15, 15);
     directionalLight2.target.position.set(0,15,0);
@@ -346,6 +391,49 @@ function createScene(canvas)
      //Box collider
      boxCollider2 = new THREE.Box3().setFromObject(cube2);
 
+    //Pared derecha
+    const geometryBox3 = new THREE.BoxGeometry( 30, 10, 1 );
+    const materialBox3 = new THREE.MeshBasicMaterial( {color:0xff0000 } );
+    meshPared1 = new THREE.Mesh( geometryBox3, materialBox3 );
+    scene.add( meshPared1 );
+    meshPared1.rotation.y=Math.PI*(1.5);
+    meshPared1.position.set(8,10,0);
+    //cube1.visible = false;
+    //Box collider
+    paredCollider1 = new THREE.Box3().setFromObject(meshPared1);
+    
+     //Pared izquierda
+     const geometryBox4 = new THREE.BoxGeometry( 30, 10, 1 );
+     const materialBox4 = new THREE.MeshBasicMaterial( {color:0xff0000 } );
+     meshPared2 = new THREE.Mesh( geometryBox4, materialBox4 );
+     scene.add( meshPared2 );
+     meshPared2.rotation.y=Math.PI*(1.5);
+     meshPared2.position.set(-8,10,0);
+     //cube1.visible = false;
+     //Box collider
+     paredCollider2 = new THREE.Box3().setFromObject(meshPared2);
+
+
+    //Collider que defecta si la pelota se le fua al Jugador
+    const geometryBox5 = new THREE.BoxGeometry( 15, 10, 1 );
+    const materialBox5 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+    meshPared3 = new THREE.Mesh( geometryBox5, materialBox5 );
+    scene.add( meshPared3 );
+    meshPared3.position.set(0,10,18);
+    //cube1.visible = false;
+    //Box collider
+    paredCollider3 = new THREE.Box3().setFromObject(meshPared3);
+
+
+       //Collider que defecta si la pelota se le fua al Jugador
+       const geometryBox6 = new THREE.BoxGeometry( 15, 10, 1 );
+       const materialBox6 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+       meshPared4 = new THREE.Mesh( geometryBox6, materialBox6 );
+       scene.add( meshPared4 );
+       meshPared4.position.set(0,10,-18);
+       //cube1.visible = false;
+       //Box collider
+       paredCollider4 = new THREE.Box3().setFromObject(meshPared4);
 
     // Create a group to hold the objects
     group = new THREE.Object3D;
