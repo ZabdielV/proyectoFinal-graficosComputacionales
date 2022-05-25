@@ -5,6 +5,22 @@
 h2{
     font-size: 3em;
     text-align:center;
+    margin-bottom: 20px;
+}
+
+h2.nivel{
+   
+    width: 100%;
+   
+    color: rgb(255, 0, 0);
+}
+
+.btn-play{
+    position: absolute;
+    width: 100%;
+    top: 90vh;
+    display: flex;
+    justify-content: space-around;
 }
 
 
@@ -17,15 +33,19 @@ margin-top: 20px;
     top: 12rem;
 }
 
-.score{
-    margin-left: 50vh;
-    margin-right: 50vh;
 
+
+.score{
+    
+    width: 100%;
     display: flex;
     justify-content: space-around;
+    position: absolute;
 }
-.score P{
-    display: inline;
+.score p{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
 }
 
 

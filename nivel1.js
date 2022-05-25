@@ -9,9 +9,11 @@ import * as THREE from '../libs/three.js/three.module.js'
 import { OrbitControls } from '../libs/three.js/controls/OrbitControls.js';
 import { OBJLoader } from '../libs/three.js/loaders/OBJLoader.js';
 import { MTLLoader } from '../libs/three.js/loaders/MTLLoader.js';
-
-let renderer = null, scene = null, camera = null, group = null, orbitControls = null;
-
+import { FBXLoader } from '../../libs/three.js/loaders/FBXLoader.js';
+let renderer = null, scene = null, camera = null, group = null, orbitControls = null,sphere= null,cube1= null,direccion= null;
+let sphereCollider=null,boxCollider=null;
+let cube2=null,boxCollider2=null;
+let cheerAnimation=null;
 let duration = 20000; // ms
 let currentTime = Date.now();
 
@@ -23,13 +25,13 @@ let mapUrl = "../images/checker_large.gif";
 
 
 
-//Mesa de pinguino
+//Mesa 
 let objMtlMesaUrl={obj:'../models/pingPongMesa/10520_pingpongtable_L2.obj', mtl:'../models/pingPongMesa/10520_pingpongtable_L2.mtl'};
 
 //Raqueta
 let objMtlRaquetaUrl={obj:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3.obj', mtl:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3.mtl'};
 
-let objMtlSonicUrl={obj:'../models/Sonic/son_M.obj', mtl:'../models/Sonic/son_M.mtl'};
+//let objMtlSonicUrl={obj:'../models/Sonic/son_M.obj', mtl:'../models/Sonic/son_M.mtl'};
 
 
 
@@ -40,6 +42,8 @@ function main()
     createScene(canvas);
 
     update();
+
+    
 }
 
 function onError ( err ){ console.error( err ); };
@@ -133,7 +137,7 @@ async function loadObjMtlRaqueta(objModelUrl)
 
         //Copia de raqueta
         let copia_raqueta=object.clone();
-        object.position.set(0,9,-15);
+        copia_raqueta.position.set(0,9,-15);
        
         scene.add(copia_raqueta);
 
@@ -143,6 +147,46 @@ async function loadObjMtlRaqueta(objModelUrl)
     catch (err)
     {
         onError(err);
+    }
+}
+
+function setVectorValue(vector, configuration, property, initialValues)
+{
+    if(configuration !== undefined)
+    {
+        if(property in configuration)
+        {
+            console.log("setting:", property, "with", configuration[property]);
+            vector.set(configuration[property].x, configuration[property].y, configuration[property].z);
+            return;
+        }
+    }
+
+    console.log("setting:", property, "with", initialValues);
+    vector.set(initialValues.x, initialValues.y, initialValues.z);
+}
+
+async function loadFBXSonic(fbxModelUrl, configuration)
+{
+    try{
+        let object = await new FBXLoader().loadAsync(fbxModelUrl);
+
+        setVectorValue(object.position, configuration, 'position', new THREE.Vector3(0,0,0));
+        setVectorValue(object.scale, configuration, 'scale', new THREE.Vector3(1, 1, 1));
+        setVectorValue(object.rotation, configuration, 'rotation', new THREE.Vector3(0,0,0));
+        console.log(object);
+        //animaciob
+        const animacion=object.animations[1];
+        //cheerAnimation= new THREE.AnimationMixer( scene ).clipAction(animacion, object);
+        //animacion1.play();
+
+        object.rotation.y = Math.PI*(1.5);
+        
+        scene.add( object );
+    }
+    catch(err)
+    {
+        console.error( err );
     }
 }
 
@@ -195,7 +239,20 @@ function animate()
     let fract = deltat / duration;
     let angle = Math.PI * 2 * fract;
 
+    //movimiento pelota
+    sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
+    sphere.position.z +=angle*20*direccion;
 
+    //se produce colision en juador
+    if(sphereCollider.intersectsBox(boxCollider)){
+    direccion*=-1;
+    }
+    if(sphereCollider.intersectsBox(boxCollider2)){
+        direccion*=-1;
+        }
+
+    //cube1.position.x+=angle*1.5;
+    //boxCollider.setFromObject(cube1);
 }
 
 function update() 
@@ -210,6 +267,7 @@ function update()
 
     // Update the camera controller
     orbitControls.update();
+
 }
 
 function createScene(canvas) 
@@ -220,6 +278,7 @@ function createScene(canvas)
     // Set the viewport size
     renderer.setSize(canvas.width, canvas.height);
 
+    direccion=1;
 
     
     // Create a new Three.js scene
@@ -252,7 +311,40 @@ function createScene(canvas)
     // Create the objects
     loadObjMtlMesa(objMtlMesaUrl);
     loadObjMtlRaqueta(objMtlRaquetaUrl);
-    loadObjMtlSonic(objMtlSonicUrl);
+    loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
+   // loadObjMtlSonic(objMtlSonicUrl);
+
+
+    //Create spheare
+    const geometrySphere = new THREE.SphereGeometry( 0.5, 32, 16 );
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+    sphere = new THREE.Mesh( geometrySphere, material );
+    sphere.position.set(0,10,0);
+    scene.add( sphere );
+
+    //Create collider for sphere
+    sphereCollider=new THREE.Sphere(sphere.position,  0.5);
+
+    //CREATE BOX player
+    const geometryBox1 = new THREE.BoxGeometry( 15, 10, 1 );
+    const materialBox1 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    cube1 = new THREE.Mesh( geometryBox1, materialBox1 );
+    scene.add( cube1 );
+    cube1.position.set(0,10,14);
+    //cube1.visible = false;
+    //Box collider
+    boxCollider = new THREE.Box3().setFromObject(cube1);
+
+
+     //CREATE BOX player
+     const geometryBox2 = new THREE.BoxGeometry( 15, 10, 1 );
+     const materialBox2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+     cube2 = new THREE.Mesh( geometryBox2, materialBox2 );
+     scene.add( cube2 );
+     cube2.position.set(0,10,-14);
+     //cube1.visible = false;
+     //Box collider
+     boxCollider2 = new THREE.Box3().setFromObject(cube2);
 
 
     // Create a group to hold the objects
@@ -276,5 +368,16 @@ function createScene(canvas)
     
 
 }
+function resize()
+{
+    const canvas = document.getElementById("webglcanvas");
 
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight;
+
+    //camera.aspect = canvas.width / canvas.height;
+
+    //camera.updateProjectionMatrix();
+    renderer.setSize(canvas.width, canvas.height);
+}
 main();
