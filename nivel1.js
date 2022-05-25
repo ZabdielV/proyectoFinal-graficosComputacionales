@@ -15,6 +15,7 @@ let sphereCollider=null,boxCollider=null;
 let cube2=null,boxCollider2=null,paredCollider1=null,paredCollider2=null,paredCollider3=null,paredCollider4=null;
 let meshPared1=null,meshPared2=null,meshPared3=null,meshPared4=null;
 let cheerAnimation=null;
+let iniciarMovimientoPelota=false;
 let movimientoX=1,movimientoZ=1;
 let duration = 20000; // ms
 let currentTime = Date.now();
@@ -45,6 +46,8 @@ function main()
 
     update();
 
+    //inicia el movimietno despues de 2 segundos
+    setInterval(()=>{iniciarMovimientoPelota=true},2000)
     
 }
 
@@ -176,14 +179,15 @@ async function loadFBXSonic(fbxModelUrl, configuration)
         setVectorValue(object.position, configuration, 'position', new THREE.Vector3(0,0,0));
         setVectorValue(object.scale, configuration, 'scale', new THREE.Vector3(1, 1, 1));
         setVectorValue(object.rotation, configuration, 'rotation', new THREE.Vector3(0,0,0));
-        console.log(object);
-        //animaciob
-        const animacion=object.animations[1];
-        //cheerAnimation= new THREE.AnimationMixer( scene ).clipAction(animacion, object);
-        //animacion1.play();
+        //console.log(object);
 
-        object.rotation.y = Math.PI*(1.5);
-        
+
+    //     const cheerAnimation = new THREE.AnimationMixer(scene);
+    //   var action = cheerAnimation.clipAction(object.animations[0],object);
+    //   action.play();
+    //   object.updateMatrix();
+    //     object.rotation.y = Math.PI*(1.5);
+    object.rotation.y = Math.PI*(1.5);
         scene.add( object );
     }
     catch(err)
@@ -242,11 +246,18 @@ function animate()
     let angle = Math.PI * 2 * fract;
     var result = 0;
 
+
+    // if(cheerAnimation){
+    //     cheerAnimation.getMixer().update(deltat * 0.001);
+    // }
+
     //movimiento pelota
-    //sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
-    sphere.position.z +=angle*60*movimientoZ;
-    sphere.position.x += angle*1*movimientoX;
-    sphere.position.y = -((sphere.position.z - 1) * (sphere.position.z - 1) / 30) + 15;
+    if(iniciarMovimientoPelota){
+        sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
+        sphere.position.z +=angle*60*movimientoZ;
+        sphere.position.x += angle*1*movimientoX;
+        sphere.position.y = -((sphere.position.z - 1) * (sphere.position.z - 1) / 30) + 15;
+    }
 
     //se produce colision en juador
     if(sphereCollider.intersectsBox(boxCollider)){
@@ -275,7 +286,7 @@ function animate()
 }
 
 function golpePelotaEnJugador(){
-    console.log("colision");
+   // console.log("colision");
     var fuerza=Math.random()*10;
     var movimiento=Math.random() > 0.5 ? -1 : 1;
    // movimientoX=(sphere.position.x-cube1.position.x)/5;
@@ -284,7 +295,7 @@ function golpePelotaEnJugador(){
 }
 
 function golpePelotaEnCPU(){
-    console.log("colision");
+    //console.log("colision");
     var fuerza=Math.random()*10;
     var movimiento=Math.random() > 0.5 ? -1 : 1;
    // movimientoX=(sphere.position.x-cube1.position.x)/5;
