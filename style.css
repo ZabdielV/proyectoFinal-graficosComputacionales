@@ -13,6 +13,10 @@ body{
     height: 100%;
 }
 
+#vidas{
+    margin-right: 20px;
+}
+
 h2{
     font-size: 3em;
     text-align:center;

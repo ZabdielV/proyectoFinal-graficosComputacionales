@@ -16,10 +16,12 @@ let cube2=null,boxCollider2=null,paredCollider1=null,paredCollider2=null,paredCo
 let meshPared1=null,meshPared2=null,meshPared3=null,meshPared4=null;
 let cheerAnimation=null;
 let iniciarMovimientoPelota=false;
+let soundPing=null,soundGG=null,soundPoint=null;
 let movimientoX=1,movimientoZ=1;
 let duration = 20000; // ms
 let currentTime = Date.now();
-let puntosJugador=0,puntosCPU=0;
+let puntosJugador=0,puntosCPU=0,vidas=3;
+let raquetaJugador=null,raquetaCPU=null;
 
 let directionalLight = null, spotLight = null, ambientLight = null;
 
@@ -54,14 +56,19 @@ let HeartPowerUpRef;
 function main()
 {
     const canvas = document.getElementById("webglcanvas");
-    window.addEventListener('mousemove', mousemove);
+    
 
     createScene(canvas);
 
     update();
 
-    //inicia el movimietno despues de 2 segundos
-    setInterval(()=>{iniciarMovimientoPelota=true},2000)
+    //inicia el movimietno despues de 4 segundos
+    Math.random() > 0.5 ? movimientoZ*=1 : movimientoZ*=-1;
+    setInterval(()=>{
+        iniciarMovimientoPelota=true
+        
+        window.addEventListener('mousemove', mousemove);
+    },4000)
     
 }
 
@@ -214,31 +221,32 @@ async function loadObjMtlRaqueta(objModelUrl)
 
         objLoader.setMaterials(materials);
 
-        const object = await objLoader.loadAsync(objModelUrl.obj);
+        //const object = await objLoader.loadAsync(objModelUrl.obj);
+        raquetaJugador = await objLoader.loadAsync(objModelUrl.obj);
 
-
-        object.traverse(function (child) {
+        raquetaJugador.traverse(function (child) {
             if (child.isMesh)
             {
-                // child.castShadow = false;
-                // child.receiveShadow = false;
+                 child.castShadow = false;
+                 child.receiveShadow = false;
             }
         });
         
         //console.log(object);
 
          //object.position.y = 0;
-         object.position.set(0,9,15);
-         object.rotation.x = Math.PI*(1.5);
-         object.scale.set(0.1, 0.1, 0.1);
-        scene.add(object);
+         raquetaJugador.position.set(0,9,15);
+         raquetaJugador.rotation.x = Math.PI*(1.5);
+         raquetaJugador.scale.set(0.1, 0.1, 0.1);
+        scene.add(raquetaJugador);
 
         //Copia de raqueta
-        let copia_raqueta=object.clone();
-        copia_raqueta.position.set(0,9,-15);
-       
-        scene.add(copia_raqueta);
-
+        //let copia_raqueta=object.clone();
+        //copia_raqueta.position.set(0,9,-15);
+        //scene.add(copia_raqueta);
+        raquetaCPU=raquetaJugador.clone();
+        raquetaCPU.position.set(0,9,-15);
+        scene.add(raquetaCPU);
       
         
     }
@@ -352,17 +360,19 @@ function animate()
         sphere.position.z +=angle*60*movimientoZ;
         sphere.position.x += angle*1*movimientoX;
         sphere.position.y = -((sphere.position.z - 1) * (sphere.position.z - 1) / 30) + 15;
+        procesarMovimientoCPU();
     }
 
     //se produce colision en juador
     if(sphereCollider.intersectsBox(boxCollider)){
 
         golpePelotaEnJugador();
-        
+        soundPing.play();
     }
     //se produce colision en CPU
     if(sphereCollider.intersectsBox(boxCollider2)){
         golpePelotaEnCPU();
+        soundPing.play();
         }
         
     //Si choca con pared derecho
@@ -380,12 +390,17 @@ function animate()
      if(sphereCollider.intersectsBox(paredCollider3)){
         reiniciarPelota()
         sumarPuntoCPU()
+        soundGG.play();
+        quitarVidas()
+        
+        
      }
 
     //Si le marcan punto al jugador
     if(sphereCollider.intersectsBox(paredCollider4)){
         reiniciarPelota()
         sumarPuntoJugador()
+        soundPoint.play();
     }
 }
 
@@ -408,20 +423,55 @@ function golpePelotaEnCPU(){
 function reiniciarPelota(){
     iniciarMovimientoPelota=false;
     sphere.position.set(0,10,0);
+    cube2.position.x=0.0;
+    raquetaCPU.position.x=cube2.position.x
+    boxCollider2.setFromObject(cube2);
+    Math.random() > 0.5 ? movimientoZ*=1 : movimientoZ*=-1;
     //Delay de 3 segundos
     setInterval(()=>{
     iniciarMovimientoPelota=true;
-    },3000);
+    },4500);
 }
 
 function sumarPuntoJugador(){
     puntosJugador++
-    console.log("puntos jugador: "+puntosJugador)
+    document.getElementById("puntosJugador").innerHTML=`Score player: ${puntosJugador}`;
 }
 
 function sumarPuntoCPU(){
     puntosCPU++
-    console.log("puntos CPU: "+puntosCPU)
+    document.getElementById("puntosCPU").innerHTML=`Score CPU: ${puntosCPU}`;
+}
+
+function quitarVidas(){
+    vidas--
+    document.getElementById("vidas").innerHTML=`Vidas: ${vidas}`;
+
+    if(vidas<=0){
+        iniciarMovimientoPelota=false
+        window.alert(`GG, ya no tienes vidas, puntos obtenidos ${puntosJugador}`);
+        window.location = '/';   
+    }
+}
+function procesarMovimientoCPU(){
+
+    //Se empeiza a mover cuando la pelota este a cierta distancia
+    if(sphere.position.z<=-5){
+
+        //Cuando la pelota se va a al izquierda
+        if(cube2.position.x>sphere.position.x){
+            cube2.position.x -=0.1;
+            boxCollider2.setFromObject(cube2);
+            raquetaCPU.position.x=cube2.position.x
+        }
+        //cuando la pelota va a la derecha
+        else if(cube2.position.x<sphere.position.x){
+            cube2.position.x +=0.1;
+            boxCollider2.setFromObject(cube2);
+            raquetaCPU.position.x=cube2.position.x
+        }
+    }
+
 }
 
 function update() 
@@ -457,10 +507,48 @@ function createScene(canvas)
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height, 1, 4000 );
 
     //camera = new THREE.OrthographicCamera( canvas.width / - 2, canvas.width / 2, canvas.height / 2, canvas.height / - 2, 1, 1000 );
-    camera.position.set(5, 30, 35);
-    camera.lookAt(0,3,0)
+    camera.position.set(0, 20, 35);
+    camera.lookAt(0,10,0)
 
-    //orbitControls = new OrbitControls(camera, renderer.domElement);
+    const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+soundPing = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( './sounds/ping.ogg', function( buffer ) {
+	soundPing.setBuffer( buffer );
+	soundPing.setLoop( false );
+	soundPing.setVolume( 0.85 );
+	
+});
+
+// create a global audio source
+soundGG = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader2 = new THREE.AudioLoader();
+audioLoader2.load( './sounds/gg.ogg', function( buffer ) {
+	soundGG.setBuffer( buffer );
+	soundGG.setLoop( false );
+	soundGG.setVolume( 0.80 );
+	
+});
+
+// create a global audio source
+soundPoint = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader3 = new THREE.AudioLoader();
+audioLoader3.load( './sounds/point.ogg', function( buffer ) {
+	soundPoint.setBuffer( buffer );
+	soundPoint.setLoop( false );
+	soundPoint.setVolume( 0.80 );
+	
+});
+
         
     // Add a directional light to show off the object
     directionalLight = new THREE.DirectionalLight( 0xaaaaaa, 1.0);
@@ -501,23 +589,23 @@ function createScene(canvas)
     sphereCollider=new THREE.Sphere(sphere.position,  0.5);
 
     //CREATE BOX player
-    const geometryBox1 = new THREE.BoxGeometry( 8, 10, 0.1 );
+    const geometryBox1 = new THREE.BoxGeometry( 1.8, 10, 0.1 );
     const materialBox1 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
     cube1 = new THREE.Mesh( geometryBox1, materialBox1 );
     scene.add( cube1 );
     cube1.position.set(0,10,14);
-    //cube1.visible = false;
+    cube1.visible = false;
     //Box collider
     boxCollider = new THREE.Box3().setFromObject(cube1);
 
 
      //CREATE BOX CPU
-     const geometryBox2 = new THREE.BoxGeometry( 8, 10, 0.1 );
+     const geometryBox2 = new THREE.BoxGeometry(1.8, 10, 0.1 );
      const materialBox2 = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
      cube2 = new THREE.Mesh( geometryBox2, materialBox2 );
      scene.add( cube2 );
      cube2.position.set(0,10,-14);
-     //cube1.visible = false;
+     cube2.visible = false;
      //Box collider
      boxCollider2 = new THREE.Box3().setFromObject(cube2);
 
@@ -528,7 +616,7 @@ function createScene(canvas)
     scene.add( meshPared1 );
     meshPared1.rotation.y=Math.PI*(1.5);
     meshPared1.position.set(8,10,0);
-    //cube1.visible = false;
+    meshPared1.visible = false;
     //Box collider
     paredCollider1 = new THREE.Box3().setFromObject(meshPared1);
     
@@ -539,7 +627,7 @@ function createScene(canvas)
      scene.add( meshPared2 );
      meshPared2.rotation.y=Math.PI*(1.5);
      meshPared2.position.set(-8,10,0);
-     //cube1.visible = false;
+     meshPared2.visible = false;
      //Box collider
      paredCollider2 = new THREE.Box3().setFromObject(meshPared2);
 
@@ -550,10 +638,10 @@ function createScene(canvas)
     meshPared3 = new THREE.Mesh( geometryBox5, materialBox5 );
     scene.add( meshPared3 );
     meshPared3.position.set(0,10,15);
-    //cube1.visible = false;
+
     //Box collider
     paredCollider3 = new THREE.Box3().setFromObject(meshPared3);
-
+    meshPared3.visible = false;
 
        //Collider que defecta si la pelota se le fua al Jugador
        const geometryBox6 = new THREE.BoxGeometry( 16, 10, 0.1 );
@@ -561,9 +649,9 @@ function createScene(canvas)
        meshPared4 = new THREE.Mesh( geometryBox6, materialBox6 );
        scene.add( meshPared4 );
        meshPared4.position.set(0,10,-15);
-       //cube1.visible = false;
        //Box collider
        paredCollider4 = new THREE.Box3().setFromObject(meshPared4);
+       meshPared4.visible = false;
 
     // Create a group to hold the objects
     group = new THREE.Object3D;
@@ -598,13 +686,14 @@ function resize()
 }
 
 function mousemove(event){
-    console.log((canvas.width / 2) - 5)
-
-    if(event.clientX >= (canvas.width / 2) + 10 || event.clientX <= (canvas.width / 2) - 10){
+    //console.log((canvas.width / 2) - 5)
+    
+    if(event.clientX >= (canvas.width / 2) + 150 || event.clientX <= (canvas.width / 2) - 150){
         console.log("limite alcanzado")
     }else{
-        cube1.position.set((event.clientX - (canvas.width / 2)), 10, 14);
+        cube1.position.set((event.clientX - (canvas.width / 2))*(0.05), 10, 14);
         boxCollider.setFromObject(cube1);
+        raquetaJugador.position.x=cube1.position.x
     }
 }
 
