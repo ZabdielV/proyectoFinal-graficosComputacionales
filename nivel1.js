@@ -343,7 +343,7 @@ function update()
     animate();
 
     // Update the camera controller
-    orbitControls.update();
+    //orbitControls.update()
 
 }
 
@@ -363,9 +363,12 @@ function createScene(canvas)
 
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height, 1, 4000 );
-    camera.position.set(-2,20, 25);
 
-    orbitControls = new OrbitControls(camera, renderer.domElement);
+    //camera = new THREE.OrthographicCamera( canvas.width / - 2, canvas.width / 2, canvas.height / 2, canvas.height / - 2, 1, 1000 );
+    camera.position.set(5, 30, 35);
+    camera.lookAt(0,3,0)
+
+    //orbitControls = new OrbitControls(camera, renderer.domElement);
         
     // Add a directional light to show off the object
     directionalLight = new THREE.DirectionalLight( 0xaaaaaa, 1.0);
@@ -497,9 +500,18 @@ function resize()
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
 
-    //camera.aspect = canvas.width / canvas.height;
+    camera.aspect = canvas.width / canvas.height;
 
-    //camera.updateProjectionMatrix();
+    camera.updateProjectionMatrix();
     renderer.setSize(canvas.width, canvas.height);
 }
+
+window.onload = () => {
+
+    resize(); 
+};
+
+
 main();
+
+
