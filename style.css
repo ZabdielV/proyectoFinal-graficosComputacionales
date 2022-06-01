@@ -1,6 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	text-decoration: none;
+	border: none;
+	outline: none;
+}
 
-
+body{
+    width: 100%;
+    height: 100%;
+}
 
 h2{
     font-size: 3em;
@@ -9,9 +20,6 @@ h2{
 }
 
 h2.nivel{
-   
-    width: 100%;
-   
     color: rgb(255, 0, 0);
 }
 
@@ -23,7 +31,6 @@ h2.nivel{
     justify-content: space-around;
 }
 
-
 .buttons{
 margin-top: 20px;
 }
@@ -33,16 +40,16 @@ margin-top: 20px;
     top: 12rem;
 }
 
-
-
 .score{
-    
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     position: absolute;
 }
-.score p{
+.score div{
+    display: flex;
+}
+.score div p{
     font-size: 1.5rem;
     font-weight: bold;
     color: rgb(255, 0, 0);
