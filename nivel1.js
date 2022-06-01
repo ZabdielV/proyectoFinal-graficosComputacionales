@@ -25,6 +25,8 @@ let directionalLight = null, spotLight = null, ambientLight = null;
 
 let mapUrl = "../images/checker_large.gif";
 
+const canvas = document.getElementById("webglcanvas");
+
 
 
 
@@ -37,11 +39,10 @@ let objMtlRaquetaUrl={obj:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3
 
 //let objMtlSonicUrl={obj:'../models/Sonic/son_M.obj', mtl:'../models/Sonic/son_M.mtl'};
 
-
-
 function main()
 {
     const canvas = document.getElementById("webglcanvas");
+    window.addEventListener('mousemove', mousemove);
 
     createScene(canvas);
 
@@ -495,8 +496,6 @@ function createScene(canvas)
 }
 function resize()
 {
-    const canvas = document.getElementById("webglcanvas");
-
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
 
@@ -504,6 +503,16 @@ function resize()
 
     camera.updateProjectionMatrix();
     renderer.setSize(canvas.width, canvas.height);
+}
+
+function mousemove(event){
+    console.log((canvas.width / 2) - 5)
+
+    if(event.clientX >= (canvas.width / 2) + 10 || event.clientX <= (canvas.width / 2) - 10){
+        console.log("limite alcanzado")
+    }else{
+        cube1.position.set((event.clientX - (canvas.width / 2)), 10, 14);
+    }
 }
 
 window.onload = () => {
