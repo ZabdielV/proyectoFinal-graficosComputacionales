@@ -25,10 +25,6 @@ let directionalLight = null, spotLight = null, ambientLight = null;
 
 let mapUrl = "../images/checker_large.gif";
 
-
-
-
-
 //Mesa 
 let objMtlMesaUrl={obj:'../models/pingPongMesa/10520_pingpongtable_L2.obj', mtl:'../models/pingPongMesa/10520_pingpongtable_L2.mtl'};
 
@@ -37,6 +33,16 @@ let objMtlRaquetaUrl={obj:'../models/pintPongRaqueta/10519_Pingpong_paddle_v1_L3
 
 //let objMtlSonicUrl={obj:'../models/Sonic/son_M.obj', mtl:'../models/Sonic/son_M.mtl'};
 
+//powerup
+let objMtlPowerUpsUrl = [
+        {obj:'../models/powerups/Heart.obj', mtl:'../models/powerups/Heart.mtl', name:'heart'},
+        {obj:'../models/powerups/Lightning.obj', mtl:'../models/powerups/Lightning.mtl', name:'light'},
+        {obj:'../models/powerups/Multiplier.obj', mtl:'../models/powerups/Multiplier.mtl', name:'mult'},
+        {obj:'../models/powerups/TripleShot.obj', mtl:'../models/powerups/TripleShot.mtl', name:'three'},
+        {obj:'../models/powerups/Sticky.obj', mtl:'../models/powerups/Sticky.mtl', name:'stick'},
+    ];
+
+let HeartPowerUpRef;
 
 
 function main()
@@ -105,6 +111,85 @@ async function loadObjMtlMesa(objModelUrl)
     {
         onError(err);
     }
+}
+
+
+function loadObjMtlPowerUps(objModelsUrls)
+{
+    objModelsUrls.forEach(async objModelUrl=>{
+        try
+        {
+            const mtlLoader = new MTLLoader();
+
+            const materials = await mtlLoader.loadAsync(objModelUrl.mtl);
+
+            materials.preload();
+            
+            const objLoader = new OBJLoader();
+
+            objLoader.setMaterials(materials);
+
+            const object = await objLoader.loadAsync(objModelUrl.obj);
+
+
+            
+            object.traverse(function (child) {
+                if (child.isMesh)
+                {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            
+
+            
+            
+            switch(objModelUrl.name){
+                case "heart":
+                    object.position.y = 20;
+                    object.scale.set(1,1,1);
+                    scene.add(object);
+                    HeartPowerUpRef = object;
+                    break;
+                case "light":
+                    object.position.y = 20;
+                    object.position.x = 5;
+                    object.scale.set(1,1,1);
+                    scene.add(object);
+                    HeartPowerUpRef = object;
+                    break;
+                case "mult":
+                    object.position.y = 19;
+                    object.position.x = -5;
+                    object.scale.set(4,4,4);
+                    scene.add(object);
+                    HeartPowerUpRef = object;
+                    break;
+                case "three":
+                    object.position.y = 20;
+                    object.position.x = 10;
+                    object.scale.set(1,1,1);
+                    scene.add(object);
+                    HeartPowerUpRef = object;
+                    break;
+                case "stick":
+                    object.position.y = 20;
+                    object.position.x = -10;
+                    object.scale.set(2,2,2);
+                    scene.add(object);
+                    HeartPowerUpRef = object;
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+        catch (err)
+        {
+            onError(err);
+        }
+    })    
+    
 }
 
 
@@ -390,6 +475,7 @@ function createScene(canvas)
     // Create the objects
     loadObjMtlMesa(objMtlMesaUrl);
     loadObjMtlRaqueta(objMtlRaquetaUrl);
+    loadObjMtlPowerUps(objMtlPowerUpsUrl);
     loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
    // loadObjMtlSonic(objMtlSonicUrl);
 
