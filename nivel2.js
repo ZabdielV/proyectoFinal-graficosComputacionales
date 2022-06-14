@@ -23,7 +23,7 @@ let duration = 20000; // ms
 let currentTime = Date.now();
 let puntosJugador=0,puntosCPU=0,vidas=3;
 let puntosMod = 1;
-let cpuSpeed = 0.1;
+let cpuSpeed = 0.2;
 let raquetaJugador=null,raquetaCPU=null;
 
 let directionalLight = null, spotLight = null, ambientLight = null;
@@ -33,7 +33,7 @@ let mapUrl = "../images/checker_large.gif";
 const canvas = document.getElementById("webglcanvas");
 
 
-let powerUpDelta = 3000 //miliseg
+let powerUpDelta = 6000 //miliseg
 let lastPowerUp = Date.now();
 let powerUpCollisioner = {};
 let powerUpsRef = {}
