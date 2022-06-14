@@ -72,7 +72,7 @@ function main()
         iniciarMovimientoPelota=true
         
         window.addEventListener('mousemove', mousemove);
-    },4000)
+    },4500)
     
 }
 
@@ -486,7 +486,7 @@ function quitarVidas(){
     if(vidas<=0){
         iniciarMovimientoPelota=false
         window.alert(`GG, ya no tienes vidas, puntos obtenidos ${puntosJugador}`);
-        window.location = '/';   
+        window.location = '/niveles.html';
     }
 }
 
@@ -503,7 +503,7 @@ function speedUp(){
 function procesarMovimientoCPU(){
 
     //Se empeiza a mover cuando la pelota este a cierta distancia
-    if(sphere.position.z<=-5){
+    if(sphere.position.z<=-8){
 
         //Cuando la pelota se va a al izquierda
         if(cube2.position.x>sphere.position.x){
@@ -621,7 +621,7 @@ audioLoader3.load( './sounds/point.ogg', function( buffer ) {
     loadObjMtlMesa(objMtlMesaUrl);
     loadObjMtlRaqueta(objMtlRaquetaUrl);
     loadObjMtlPowerUps(objMtlPowerUpsUrl);
-    loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
+   // loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
    // loadObjMtlSonic(objMtlSonicUrl);
 
 

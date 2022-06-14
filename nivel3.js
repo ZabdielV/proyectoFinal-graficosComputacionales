@@ -21,7 +21,7 @@ let soundPing=null,soundGG=null,soundPoint=null;
 let movimientoX=1,movimientoZ=1;
 let duration = 20000; // ms
 let currentTime = Date.now();
-let puntosJugador=0,puntosCPU=0,vidas=3;
+let puntosJugador=0,puntosCPU=0,vidas=1;
 let puntosMod = 1;
 let cpuSpeed = 0.3;
 let raquetaJugador=null,raquetaCPU=null;
@@ -72,7 +72,7 @@ function main()
         iniciarMovimientoPelota=true
         
         window.addEventListener('mousemove', mousemove);
-    },4000)
+    },4500)
     
 }
 
@@ -391,7 +391,7 @@ function animate()
         //Actualizar la posicion del collider
         sphereCollider.center.set(sphere.position.x, sphere.position.y, sphere.position.z);
         //Actualizar la posicion del mesh
-        sphere.position.z +=angle*60*movimientoZ;
+        sphere.position.z +=angle*150*movimientoZ;
         sphere.position.x += angle*1*movimientoX;
         sphere.position.y = -((sphere.position.z - 1) * (sphere.position.z - 1) / 30) + 15;
         procesarMovimientoCPU();
@@ -440,7 +440,7 @@ function animate()
 
 function golpePelotaEnJugador(){
    // console.log("colision");
-    var fuerza=Math.random()*10;
+    var fuerza=Math.random()*50;
     var movimiento=Math.random() > 0.5 ? -1 : 1;
    movimientoX=fuerza*movimiento;
     movimientoZ*=-1;
@@ -448,7 +448,7 @@ function golpePelotaEnJugador(){
 
 function golpePelotaEnCPU(){
     //console.log("colision");
-    var fuerza=Math.random()*10;
+    var fuerza=Math.random()*50;
     var movimiento=Math.random() > 0.5 ? -1 : 1;
    movimientoX=fuerza*movimiento;
     movimientoZ*=-1;
@@ -486,7 +486,7 @@ function quitarVidas(){
     if(vidas<=0){
         iniciarMovimientoPelota=false
         window.alert(`GG, ya no tienes vidas, puntos obtenidos ${puntosJugador}`);
-        window.location = '/';   
+        window.location = '/niveles.html';   
     }
 }
 
@@ -621,7 +621,7 @@ audioLoader3.load( './sounds/point.ogg', function( buffer ) {
     loadObjMtlMesa(objMtlMesaUrl);
     loadObjMtlRaqueta(objMtlRaquetaUrl);
     loadObjMtlPowerUps(objMtlPowerUpsUrl);
-    loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
+    //loadFBXSonic('../models/Sonic/Cheering sonic.fbx',{position: new THREE.Vector3(20, 0, 0), scale:new THREE.Vector3(1, 1, 1) });
    // loadObjMtlSonic(objMtlSonicUrl);
 
 
